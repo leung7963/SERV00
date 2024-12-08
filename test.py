@@ -11,8 +11,8 @@ def trigger_github_action(domains):
     if not domains:
         return
     github_token = os.environ.get("GITHUB_TOKEN")  # 从环境变量中获取GitHub token
-    repo = "leung7963/socks5-for-serv00"  # 替换为要触发的GitHub仓库
-    workflow_id = "nezha.yaml"  # 替换为要触发的工作流ID或文件名
+    repo = "leung7963/SERV00"  # 替换为要触发的GitHub仓库
+    workflow_id = "restart-action.yaml"  # 替换为要触发的工作流ID或文件名
     api_url = f"https://api.github.com/repos/{repo}/actions/workflows/{workflow_id}/dispatches"
 
     headers = {
