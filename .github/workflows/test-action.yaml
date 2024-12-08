@@ -1,0 +1,31 @@
+name: Test Proxies
+
+on:
+  workflow_dispatch:
+  schedule:
+   - cron: '0 8 */1 * *'
+
+jobs:
+  test_proxies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+      
+    - name: Install dependencies
+      run: |
+        pip install requests pysocks
+        pip install pythonping
+
+    - name: Run proxy test
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN}}
+        PROXY_DATA: ${{ secrets.PROXY_DATA }}
+      run: |
+        python test.py
