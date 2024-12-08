@@ -28,7 +28,7 @@ jobs:
             password=$(echo "$account" | jq -r '.password')
             ssh=$(echo "$account" | jq -r '.ssh')
 
-            echo "echo \"Executing for $username@$ssh\"" >> sshpass.sh
+            echo "echo \"Executing for $ssh\"" >> sshpass.sh
             echo "sshpass -p '$password' ssh -o StrictHostKeyChecking=no '$username@$ssh' 'bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)'" >> sshpass.sh
           done < <(jq -c '.[]' accounts.json)
           chmod +x sshpass.sh
