@@ -2,7 +2,7 @@
 
 USER=$(whoami)
 
-FILE_PATH="/home/${USER}/site"
+FILE_PATH="/home/${USER}/.application"
 
 echo "检查并 重启 任务"
 
