@@ -10,7 +10,6 @@ echo "检查php"
 pgrep -x "php" > /dev/null
 
 
-#如果没有运行，则启动 nezha
 if [ $? -ne 0 ]; then
     nohup ${FILE_PATH}/start.sh >/dev/null 2>&1 &
     echo "运行成功php"
