@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-FILE_PATH = "./.application"
+FILE_PATH="./.application"
 
 echo "检查并 重启 任务"
 
