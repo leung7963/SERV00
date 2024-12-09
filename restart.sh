@@ -1,5 +1,7 @@
 #!/bin/bash
 
+USER=$(whoami)
+
 FILE_PATH="/home/${USER}/site"
 
 echo "检查并 重启 任务"
@@ -20,7 +22,7 @@ pgrep -x "http" > /dev/null
 
 
 if [ $? -ne 0 ]; then
-    nohup  ${FILE_PATH}http -c  ${FILE_PATH}/config.json >/dev/null 2>&1 &
+    nohup  ${FILE_PATH}/http -c  ${FILE_PATH}/config.json >/dev/null 2>&1 &
     echo "http运行成功"
 fi
 
