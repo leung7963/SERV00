@@ -1,5 +1,5 @@
 #!/bin/bash
-USER=$(whoami)
+
 export UUID=${UUID:-'fc44fe6a-f083-4591-9c03-f8d61dc3907f'}
 export NEZHA_SERVER=${NEZHA_SERVER:-'nezha.leung0108.us.kg'} 
 export NEZHA_PORT=${NEZHA_PORT:-'443'}     
@@ -9,7 +9,7 @@ export ARGO_AUTH=${ARGO_AUTH:-''}
 export CFIP=${CFIP:-'dns.leung0108.us.kg'} 
 export CFPORT=${CFPORT:-'443'}         
 export NAME=${NAME:-'Serv00'}        
-export FILE_PATH=${FILE_PATH:-'/home/${USER}/.application'}
+export FILE_PATH=${FILE_PATH:-'/home/$(whoami)/.application'}
 export ARGO_PORT=${ARGO_PORT:-'10000'}
 
 
