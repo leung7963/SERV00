@@ -9,7 +9,7 @@ export ARGO_AUTH=${ARGO_AUTH:-''}
 export CFIP=${CFIP:-'dns.leung0108.us.kg'} 
 export CFPORT=${CFPORT:-'443'}         
 export NAME=${NAME:-'Serv00'}        
-export FILE_PATH=${FILE_PATH:-'/home/$(whoami)/.application'}
+export FILE_PATH="/home/$(whoami)/.application"
 export ARGO_PORT=${ARGO_PORT:-'10000'}
 
 
