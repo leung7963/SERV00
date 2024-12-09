@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FILE_PATH="./site"
+FILE_PATH="/home/${USER}/site"
 
 echo "检查并 重启 任务"
 
