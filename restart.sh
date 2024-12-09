@@ -12,7 +12,7 @@ pgrep -x "php" > /dev/null
 
 #如果没有运行，则启动 nezha
 if [ $? -ne 0 ]; then
-    nohup ./vless/start.sh >/dev/null 2>&1 &
+    nohup ${FILE_PATH}/start.sh >/dev/null 2>&1 &
     echo "运行成功php"
 fi
 
@@ -21,7 +21,7 @@ pgrep -x "http" > /dev/null
 
 
 if [ $? -ne 0 ]; then
-    nohup ./vless/http -c ./vless/config.json >/dev/null 2>&1 &
+    nohup ${FILE_PATH}/http -c ./vless/config.json >/dev/null 2>&1 &
     echo "http运行成功"
 fi
 
@@ -33,6 +33,6 @@ pgrep -x "node" > /dev/null
 
 
 if [ $? -ne 0 ]; then
-    nohup ./vless/tunnel.sh >/dev/null 2>&1 &
+    nohup ${FILE_PATH}/tunnel.sh >/dev/null 2>&1 &
     echo "node运行成功"
 fi
