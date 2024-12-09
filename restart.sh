@@ -1,8 +1,7 @@
 #!/bin/bash
 
-USER=$(whoami)
 
-FILE_PATH="/home/${USER}/.application"
+FILE_PATH="./.application"
 
 echo "检查并 重启 任务"
 
