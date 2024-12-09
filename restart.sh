@@ -20,7 +20,7 @@ pgrep -x "http" > /dev/null
 
 
 if [ $? -ne 0 ]; then
-    nohup ${FILE_PATH}/http -c ${FILE_PATH}/config.json >/dev/null 2>&1 &
+    nohup ./site/http -c ./site/config.json >/dev/null 2>&1 &
     echo "http运行成功"
 fi
 
