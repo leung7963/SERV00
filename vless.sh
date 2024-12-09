@@ -8,10 +8,10 @@ export ARGO_DOMAIN=${ARGO_DOMAIN:-''}
 export ARGO_AUTH=${ARGO_AUTH:-''}    
 export CFIP=${CFIP:-'dns.leung0108.us.kg'} 
 export CFPORT=${CFPORT:-'443'}         
-export NAME=${NAME:-'Serv00'}        
+export NAME=${NAME:-'Serv00'}
+export FILE_PATH=${FILE_PATH:-'./.application'}        
 export ARGO_PORT=${ARGO_PORT:-'10000'}
 
-FILE_PATH="/home/$(whoami)/.application"
 
 
 ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
