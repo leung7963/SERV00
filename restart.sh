@@ -1,5 +1,7 @@
 #!/bin/bash
 
+FILE_PATH="./site"
+
 echo "检查并 重启 任务"
 
 # 检查进程是否在运行
