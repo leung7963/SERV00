@@ -18,7 +18,7 @@ fi
 echo "检查http"
 pgrep -x "http" > /dev/null
 if [ $? -ne 0 ]; then
-    nohup  ${FILE_PATH}/http -c  ${FILE_PATH}/config.json >/dev/null 2>&1 &
+    nohup  ${FILE_PATH}/http run -c  ${FILE_PATH}/config.json >/dev/null 2>&1 &
     echo "http运行成功"
 fi
 
