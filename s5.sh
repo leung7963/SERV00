@@ -66,14 +66,14 @@ generate_config() {
   },
   "inbounds": [
     {
+      "listen": "0.0.0.0",
       "port": "$SOCKS5_PORT",
       "protocol": "socks",
       "tag": "socks",
       "settings": {
         "auth": "password",
         "udp": false,
-        "ip": "0.0.0.0",
-        "userLevel": 0,
+        "ip": "127.0.0.1",
         "accounts": [
           {
             "user": "$SOCKS5_USER",
