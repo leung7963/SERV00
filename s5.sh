@@ -81,7 +81,7 @@ generate_config() {
           }
         ]
       }
-    }
+    },
     {
       "port": $ARGO_PORT,
       "listen": "0.0.0.0",
