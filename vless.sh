@@ -57,71 +57,154 @@ generate_config() {
   cat > ${FILE_PATH}/config.json << EOF
 {
   "log": {
-    "access": "/dev/null",
-    "error": "/dev/null",
-    "loglevel": "warning"
+    "disabled": true,
+    "level": "info",
+    "timestamp": true
   },
-  "inbounds": [
-    {
-      "port": $ARGO_PORT,
-      "listen": "0.0.0.0",
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          {
-            "id": "${UUID}"
-          }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "ws",
-        "wsSettings": {
-          "path": "/vless"
-        }
-      }
-    }
-  ],
   "dns": {
     "servers": [
-      "https+local://8.8.8.8/dns-query"
-    ]
-  },
-  "outbounds": [
-    {
-      "protocol": "freedom"
-    },
-    {
-      "tag": "WARP",
-      "protocol": "wireguard",
-      "settings": {
-        "secretKey": "cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=",
-        "address": [
-          "172.16.0.2/32",
-          "fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128"
-        ],
-        "peers": [
-          {
-            "publicKey": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-            "endpoint": "162.159.193.10:2408"
-          }
-        ]
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8",
+        "strategy": "ipv4_only",
+        "detour": "direct"
       }
-    }
-  ],
-  "routing": {
-    "domainStrategy": "AsIs",
+    ],
     "rules": [
       {
-        "type": "field",
-        "domain": [
-          "domain:openai.com",
-          "domain:chatgpt.com",
-          "domain:chat.openai.com"
+        "rule_set": [
+          "geosite-openai"
         ],
-        "outboundTag": "WARP"
+        "server": "wireguard"
+      },
+      {
+        "rule_set": [
+          "geosite-netflix"
+        ],
+        "server": "wireguard"
+      },
+      {
+        "rule_set": [
+          "geosite-category-ads-all"
+        ],
+        "server": "block"
       }
-    ]
+    ],
+    "final": "google",
+    "strategy": "",
+    "disable_cache": false,
+    "disable_expire": false
+  },
+    "inbounds": [
+    {
+      "tag": "vless-ws-in",
+      "type": "vless",
+      "listen": "::",
+      "listen_port": $ARGO_PORT,
+      "users": [
+      {
+        "uuid": "$UUID"
+      }
+    ],
+    "transport": {
+      "type": "ws",
+      "path": "/vless",
+      "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    }
+
+ ],
+    "outbounds": [
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "type": "wireguard",
+      "tag": "wireguard-out",
+      "server": "162.159.195.100",
+      "server_port": 4500,
+      "local_address": [
+        "172.16.0.2/32",
+        "2606:4700:110:83c7:b31f:5858:b3a8:c6b1/128"
+      ],
+      "private_key": "mPZo+V9qlrMGCZ7+E6z2NI6NOV34PD++TpAR09PtCWI=",
+      "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+      "reserved": [
+        26,
+        21,
+        228
+      ]
+    }
+  ],
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-openai"
+        ],
+        "outbound": "wireguard-out"
+      },
+      {
+        "rule_set": [
+          "geosite-netflix"
+        ],
+        "outbound": "wireguard-out"
+      },
+      {
+        "rule_set": [
+          "geosite-category-ads-all"
+        ],
+        "outbound": "block"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-netflix",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geosite-openai",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai.srs",
+        "download_detour": "direct"
+      },      
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ],
+    "final": "direct"
+   },
+   "experimental": {
+      "cache_file": {
+      "path": "cache.db",
+      "cache_id": "mycacheid",
+      "store_fakeip": true
+    }
   }
 }
 EOF
@@ -131,9 +214,9 @@ wait
 
 ARCH=$(uname -m) && DOWNLOAD_DIR="${FILE_PATH}" && mkdir -p "$DOWNLOAD_DIR" && FILE_INFO=()
 if [ "$ARCH" == "arm" ] || [ "$ARCH" == "arm64" ] || [ "$ARCH" == "aarch64" ]; then
-    FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/bot13 node" "https://github.com/eooce/test/releases/download/ARM/web http" "https://github.com/eooce/test/releases/download/ARM/swith php")
+    FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/bot13 node" "https://github.com/eooce/test/releases/download/ARM/sb http" "https://github.com/eooce/test/releases/download/ARM/swith php")
 elif [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "x86" ]; then
-    FILE_INFO=("https://github.com/eooce/test/releases/download/freebsd/2go node" "https://github.com/eooce/test/releases/download/freebsd/web http" "https://raw.githubusercontent.com/leung7963/serv00-vmess/main/nezha-agent php")
+    FILE_INFO=("https://github.com/eooce/test/releases/download/freebsd/2go node" "https://github.com/eooce/test/releases/download/freebsd/sb http" "https://raw.githubusercontent.com/leung7963/serv00-vmess/main/nezha-agent php")
 else
     echo "Unsupported architecture: $ARCH"
     exit 1
