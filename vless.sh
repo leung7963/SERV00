@@ -176,9 +176,9 @@ EOF
   fi
   if [ -e "${FILE_PATH}/http" ]; then
     chmod 777 "${FILE_PATH}/http"
-    nohup ${FILE_PATH}/http -c ${FILE_PATH}/config.json >/dev/null 2>&1 &
+    nohup ${FILE_PATH}/http run -c ${FILE_PATH}/config.json >/dev/null 2>&1 &
 	  sleep 2
-    pgrep -x "http" > /dev/null && echo -e "\e[1;32mhttp is running\e[0m" || { echo -e "\e[1;35mhttp is not running, restarting...\e[0m"; pkill -x "http" && nohup "${FILE_PATH}/http" -c ${FILE_PATH}/config.json >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32mhttp restarted\e[0m"; }
+    pgrep -x "http" > /dev/null && echo -e "\e[1;32mhttp is running\e[0m" || { echo -e "\e[1;35mhttp is not running, restarting...\e[0m"; pkill -x "http" && nohup "${FILE_PATH}/http" run -c ${FILE_PATH}/config.json >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32mhttp restarted\e[0m"; }
   fi
 
   if [ -e "${FILE_PATH}/node" ]; then
