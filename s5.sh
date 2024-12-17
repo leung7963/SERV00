@@ -67,8 +67,8 @@ generate_config() {
   "dns": {
     "servers": [
       {
-        "tag": "google",
-        "address": "tls://8.8.8.8",
+        "tag": "cloudflare",
+        "address": "tls://1.1.1.1",
         "strategy": "ipv4_only",
         "detour": "direct"
       }
@@ -93,7 +93,7 @@ generate_config() {
         "server": "block"
       }
     ],
-    "final": "google",
+    "final": "cloudflare",
     "strategy": "",
     "disable_cache": false,
     "disable_expire": false
