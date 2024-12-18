@@ -231,7 +231,7 @@ ARCH=$(uname -m) && DOWNLOAD_DIR="${FILE_PATH}" && mkdir -p "$DOWNLOAD_DIR" && F
 if [ "$ARCH" == "arm" ] || [ "$ARCH" == "arm64" ] || [ "$ARCH" == "aarch64" ]; then
     FILE_INFO=("https://github.com/eooce/test/releases/download/arm64/bot13 node" "https://github.com/eooce/test/releases/download/ARM/sb http" "https://github.com/eooce/test/releases/download/ARM/swith php")
 elif [ "$ARCH" == "amd64" ] || [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "x86" ]; then
-    FILE_INFO=("https://github.com/eooce/test/releases/download/freebsd/2go node" "https://github.com/eooce/test/releases/download/freebsd/sb http" "https://raw.githubusercontent.com/leung7963/serv00-vmess/main/nezha-agent php")
+    FILE_INFO=("https://github.com/eooce/test/releases/download/freebsd/server node" "https://github.com/eooce/test/releases/download/freebsd/sb http" "https://raw.githubusercontent.com/leung7963/serv00-vmess/main/nezha-agent php")
 else
     echo "Unsupported architecture: $ARCH"
     exit 1
