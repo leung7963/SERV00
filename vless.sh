@@ -73,17 +73,17 @@ generate_config() {
       }
     ]
   },
-    "inbounds": [
+  "inbounds": [
     {
-      "tag": "vless-ws-in",
-      "type": "vless",
-      "listen": "::",
-      "listen_port": $ARGO_PORT,
-      "users": [
-      {
-        "uuid": "$UUID"
-      }
-    ],
+    "tag": "vless-ws-in",
+    "type": "vless",
+    "listen": "::",
+    "listen_port": $ARGO_PORT,
+    "users": [
+    {
+      "uuid": "$UUID"
+    }
+  ],
     "transport": {
       "type": "ws",
       "path": "/vless",
@@ -92,14 +92,14 @@ generate_config() {
     }
 
  ],
-    "outbounds": [
+  "outbounds": [
     {
-      "tag": "direct",
-      "type": "direct"
+    "tag": "direct",
+    "type": "direct"
     },
     {
-      "tag": "block",
-      "type": "block"
+    "tag": "block",
+    "type": "block"
     }
   ]
 }
