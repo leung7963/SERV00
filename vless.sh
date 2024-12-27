@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export UUID=${UUID:-'fc44fe6a-f083-4591-9c03-f8d61dc3907f'}
-export NEZHA_SERVER=${NEZHA_SERVER:-'nezha.jjl.cc.ua'} 
+export NEZHA_SERVER=${NEZHA_SERVER:-'nz.0662.ip-ddns.com'} 
 export NEZHA_PORT=${NEZHA_PORT:-'443'}     
 export NEZHA_KEY=${NEZHA_KEY:-''}
 export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
