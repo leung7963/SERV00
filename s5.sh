@@ -76,7 +76,7 @@ generate_config() {
       }
     ]
   },
-    "inbounds": [
+  "inbounds": [
     {
       "tag": "vless-ws-in",
       "type": "vless",
