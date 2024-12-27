@@ -210,7 +210,7 @@ EOF
 generate_links
 echo -e "\e[1;96mRunning done!\e[0m"
 echo -e "\e[1;96mThank you for using this script,enjoy!\e[0m"
-sleep 10
+sleep 2
 clear
 
 # tail -f /dev/null
