@@ -1,5 +1,4 @@
 requests
 datetime
-re
 json
 subprocess
