@@ -6,8 +6,18 @@ SCRIPT_PATH="/root/keep.sh"                    # 脚本路径
 export CFIP=${CFIP:-'www.visa.com.tw'}         # 优选域名或优选ip
 export CFPORT=${CFIPPORT:-'443'}               # 优选域名或优选ip对应端口
 
-# 从 GitHub Action 的 env 变量获取服务器配置信息并解析（需先确保 jq 工具已安装，前面 install_packages 函数中已有安装逻辑）
-servers=$(echo $SERVERS_JSON | jq -r 'to_entries | map({key:.key, value:.value}) | from_entries')
+# 从servers.json文件读取服务器配置信息并解析为关联数组
+servers=()
+if [ -f "servers.json" ]; then
+    while IFS= read -r line; do
+        key=$(echo "$line" | cut -d':' -f1 | tr -d '"')
+        value=$(echo "$line" | cut -d':' -f2- | tr -d '"')
+        servers["$key"]="$value"
+    done < <(jq -r 'to_entries |.[] | [.key,.value] | @csv' servers.json)
+else
+    red "未找到servers.json文件，请确保该文件存在且配置正确！"
+    exit 1
+fi
 
 # 定义颜色
 red() { echo -e "\e[1;91m$1\033[0m"; }
@@ -75,7 +85,7 @@ run_remote_command() {
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
 
-# 循环遍历服务器列表检测（这里使用从 GitHub Action env 变量解析出的 servers）
+# 循环遍历服务器列表检测（使用从servers.json解析出的servers）
 for host in "${!servers[@]}"; do
     IFS=':' read -r ssh_user ssh_pass tcp_port udp1_port udp2_port argo_domain argo_auth <<< "${servers[$host]}"
 
@@ -99,7 +109,7 @@ for host in "${!servers[@]}"; do
 
     # 检查 Argo 隧道
     while [ $argo_attempt -lt $max_attempts ]; do
-        if check_argo_tunnel "$argo_domain"; then
+        if check_argo_tunnel "$argo_domain"); then
             green "$time  Argo 隧道在线 Argo域名: $argo_domain   账户: $ssh_user\n"
             argo_attempt=0
             break
