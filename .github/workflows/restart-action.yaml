@@ -16,9 +16,9 @@ jobs:
       - name: Get ACCOUNTS_JSON
         id: get-accounts
         run: |
-          echo "$ACCOUNTS_JSON" > accounts.json
+          echo "$SERVERS_JSON" > servers.txt
         env:
-          ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+          SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
         # 从 GitHub Secrets 获取 ACCOUNTS_JSON 变量，并保存到文件 accounts.json
 
       - name: Generate SSH Commands
@@ -26,13 +26,13 @@ jobs:
         run: |
           echo "#!/bin/bash" > sshpass.sh
           while IFS= read -r account; do
-            username=$(echo "$account" | jq -r '.username')
-            password=$(echo "$account" | jq -r '.password')
-            ssh=$(echo "$account" | jq -r '.ssh')
+            username=$(echo "$account" | cut -d':' -f2)
+            password=$(echo "$account" | cut -d':' -f3)
+            ssh=$(echo "$account" |  cut -d':' -f1)
 
             echo "echo \"Executing for $ssh\"" >> sshpass.sh
             echo "sshpass -p '$password' ssh -o StrictHostKeyChecking=no '$username@$ssh' 'bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)'" >> sshpass.sh
-          done < <(jq -c '.[]' accounts.json)
+          done < <(jq -c '.[]' servers.txt)
           chmod +x sshpass.sh
 
       - name: Execute SSH Commands
