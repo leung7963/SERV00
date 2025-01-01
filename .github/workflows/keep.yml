@@ -27,7 +27,7 @@ jobs:
       - name: Get A_JSON
         id: get-accounts
         run: |
-          echo "$SERVERS_JSON" > servers.json
+          echo "$SERVERS_JSON" > servers.txt
         env:
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
       - name: Execute SSH Login Script
