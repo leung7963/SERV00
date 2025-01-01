@@ -12,6 +12,43 @@ green() { echo -e "\e[1;32m$1\033[0m"; }
 yellow() { echo -e "\e[1;33m$1\033[0m"; }
 purple() { echo -e "\e[1;35m$1\033[0m"; }
 
+export TERM=xterm
+export DEBIAN_FRONTEND=noninteractive
+install_packages() {
+    if [ -f /etc/debian_version ]; then
+        package_manager="apt-get install -y"
+    elif [ -_f /etc/redhat-release ]; then
+        package_manager="yum install -y"
+    elif [ -f /etc/fedora-release ]; then
+        package_manager="dnf install -y"
+    elif [ -f /etc/alpine-release ]; then
+        package_manager="apk add"
+    else
+        red "不支持的系统架构！"
+        exit 1
+    fi
+    $package_manager sshpass curl netcat-openbsd jq cron >/dev/null 2>&1 &
+}
+install_packages
+clear
+
+# 添加定时任务
+add_cron_job() {
+    if [ -f /etc/alpine-release ]; then
+        if ! command -v crond >/dev/null 2>&1; then
+            apk add --no-cache cronie bash >/dev/null 2>&1 &
+            rc-update add crond && rc-service crond start
+        fi
+    fi
+    # 检查定时任务是否已经存在
+    if ! crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
+        (crontab -l 2>/dev/null; echo "*/2 * * * * /bin/bash $SCRIPT_PATH >> /root/keep_00.log 2>&1") | crontab -
+        green "已添加计划任务，每两分钟执行一次"
+    else
+        purple "计划任务已存在，跳过添加计划任务"
+    fi
+}
+add_cron_job
 
 # 检查 TCP 端口是否通畅
 check_tcp_port() {
@@ -38,20 +75,35 @@ check_argo_tunnel() {
 
 # 执行远程命令
 run_remote_command() {
+    local host=$1
+    local ssh_user=$2
+    local ssh_pass=$3
+    local tcp_port=$4
+    local udp1_port=$5
+    local udp2_port=$6
+    local argo_domain=${7}
+    local argo_auth=${8}
 
-    remote_command="bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)"
+    remote_command="VMESS_PORT=$tcp_port HY2_PORT=$udp1_port TUIC_PORT=$udp2_port ARGO_DOMAIN=$argo_domain ARGO_AUTH='$argo_auth' CFIP=$CFIP CFPORT=$CFPORT bash <(curl -Ls https://raw.githubusercontent.com/eooce/sing-box/main/sb_00.sh)"
     
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
 
 # 从servers.txt读取服务器列表
+lines=()
 while IFS= read -r line; do
+    lines+=("$line")
+done < servers.txt
+
+for line in "${lines[@]}"; do
     host=$(echo "$line" | cut -d':' -f1)
     ssh_user=$(echo "$line" | cut -d':' -f2)
     ssh_pass=$(echo "$line" | cut -d':' -f3)
     tcp_port=$(echo "$line" | cut -d':' -f4)
-    argo_domain=$(echo "$line" | cut -d':' -f5)
-    remarks=$(echo "$line" | cut -d':' -f6)
+    udp1_port=$(echo "$line" | cut -d':' -f5)
+    udp2_port=$(echo "$line" | cut -d':' -f6)
+    argo_domain=$(echo "$line" | cut -d':' -f7)
+    argo_auth=$(echo "$line" | cut -d':' -f8)
 
     tcp_attempt=0
     argo_attempt=0
@@ -59,41 +111,39 @@ while IFS= read -r line; do
     time=$(TZ="Asia/Hong_Kong" date +"%Y-%m-%d %H:%M")
 
     # 检查 TCP 端口
-    while [ $tcp_attempt -lt $max_attempts ]; do
+    for (( ; tcp_attempt < max_attempts; tcp_attempt++ )); do
         if check_tcp_port "$host" "$tcp_port"; then
-            green "$time  TCP端口${tcp_port}通畅 服务器: $host  账户: $remarks"
+            green "$time  TCP端口${tcp_port}通畅 服务器: $host  账户: $ssh_user"
             tcp_attempt=0
             break
         else
-            red "$time  TCP端口${tcp_port}不通 服务器: $host  账户: $remarks"
+            red "$time  TCP端口${tcp_port}不通 服务器: $host  账户: $ssh_user"
             sleep 10
-            tcp_attempt=$((tcp_attempt+1))
         fi
     done
 
     # 检查 Argo 隧道
-    while [ $argo_attempt -lt $max_attempts ]; do
+    for (( ; argo_attempt < max_attempts; argo_attempt++ )); do
         if check_argo_tunnel "$argo_domain"; then
-            green "$time  Argo 隧道在线  账户: $remarks"
+            green "$time  Argo 隧道在线 Argo域名: $argo_domain   账户: $ssh_user\n"
             argo_attempt=0
             break
         else
-            red "$time  Argo 隧道离线 账户: $remarks"
+            red "$time  Argo 隧道离线 Argo域名: $argo_domain   账户: $ssh_user"
             sleep 10
-            argo_attempt=$((argo_attempt+1))
         fi
     done
    
     # 如果3次检测失败，则执行 SSH 连接并执行远程命令
     if [ $tcp_attempt -ge 3 ] || [ $argo_attempt -ge 3 ]; then
-        yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $remarks"
+        yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $ssh_user"
         if sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" -q exit; then
             green "$time  SSH远程连接成功 服务器: $host  账户 : $ssh_user"
-            output=$(run_remote_command "$host" "$ssh_user" "$ssh_pass" "$argo_domain" "$remarks")
+            output=$(run_remote_command "$host" "$ssh_user" "$ssh_pass" "$tcp_port" "$udp1_port" "$udp2_port" "$argo_domain" "$argo_auth")
             yellow "远程命令执行结果：\n"
             echo "$output"
         else
-            red "$time  连接失败，请检查你的账户密码 服务器: $host  账户: $remarks"
+            red "$time  连接失败，请检查你的账户密码 服务器: $host  账户: $ssh_user"
         fi
     fi
-done < servers.txt
+done
