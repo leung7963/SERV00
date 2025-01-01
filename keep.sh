@@ -50,10 +50,7 @@ while IFS= read -r line; do
     ssh_user=$(echo "$line" | cut -d':' -f2)
     ssh_pass=$(echo "$line" | cut -d':' -f3)
     tcp_port=$(echo "$line" | cut -d':' -f4)
-    udp1_port=$(echo "$line" | cut -d':' -f5)
-    udp2_port=$(echo "$line" | cut -d':' -f6)
-    argo_domain=$(echo "$line" | cut -d':' -f7)
-    argo_auth=$(echo "$line" | cut -d':' -f8)
+    argo_domain=$(echo "$line" | cut -d':' -f5)
 
     tcp_attempt=0
     argo_attempt=0
