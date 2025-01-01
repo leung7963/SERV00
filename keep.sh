@@ -51,6 +51,7 @@ while IFS= read -r line; do
     ssh_pass=$(echo "$line" | cut -d':' -f3)
     tcp_port=$(echo "$line" | cut -d':' -f4)
     argo_domain=$(echo "$line" | cut -d':' -f5)
+    remarks=$(echo "$line" | cut -d':' -f6)
 
     tcp_attempt=0
     argo_attempt=0
@@ -60,11 +61,11 @@ while IFS= read -r line; do
     # 检查 TCP 端口
     while [ $tcp_attempt -lt $max_attempts ]; do
         if check_tcp_port "$host" "$tcp_port"; then
-            green "$time  TCP端口${tcp_port}通畅 服务器: $host  账户: $ssh_user"
+            green "$time  TCP端口${tcp_port}通畅 服务器: $host  账户: $remarks"
             tcp_attempt=0
             break
         else
-            red "$time  TCP端口${tcp_port}不通 服务器: $host  账户: $ssh_user"
+            red "$time  TCP端口${tcp_port}不通 服务器: $host  账户: $remarks"
             sleep 10
             tcp_attempt=$((tcp_attempt+1))
         fi
@@ -73,11 +74,11 @@ while IFS= read -r line; do
     # 检查 Argo 隧道
     while [ $argo_attempt -lt $max_attempts ]; do
         if check_argo_tunnel "$argo_domain"; then
-            green "$time  Argo 隧道在线 Argo域名: $argo_domain   账户: $ssh_user\n"
+            green "$time  Argo 隧道在线  账户: $remarks"
             argo_attempt=0
             break
         else
-            red "$time  Argo 隧道离线 Argo域名: $argo_domain   账户: $ssh_user"
+            red "$time  Argo 隧道离线 账户: $remarks"
             sleep 10
             argo_attempt=$((argo_attempt+1))
         fi
@@ -85,14 +86,14 @@ while IFS= read -r line; do
    
     # 如果3次检测失败，则执行 SSH 连接并执行远程命令
     if [ $tcp_attempt -ge 3 ] || [ $argo_attempt -ge 3 ]; then
-        yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $ssh_user"
+        yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $remarks"
         if sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" -q exit; then
             green "$time  SSH远程连接成功 服务器: $host  账户 : $ssh_user"
-            output=$(run_remote_command "$host" "$ssh_user" "$ssh_pass" "$tcp_port" "$udp1_port" "$udp2_port" "$argo_domain" "$argo_auth")
+            output=$(run_remote_command "$host" "$ssh_user" "$ssh_pass" "$argo_domain" "$remarks")
             yellow "远程命令执行结果：\n"
             echo "$output"
         else
-            red "$time  连接失败，请检查你的账户密码 服务器: $host  账户: $ssh_user"
+            red "$time  连接失败，请检查你的账户密码 服务器: $host  账户: $remarks"
         fi
     fi
 done < servers.txt
