@@ -1,23 +1,28 @@
-name: keep
+name: keep_serv00
 
 on:
-  workflow_dispatch: # 手动触发工作流
+  #schedule:
+  #  - cron: '0 */5 * * *'  # 每 5 小时执行一次
+  workflow_dispatch:  # 支持手动执行  
 
-
+env:
+  SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
+  
 jobs:
-  execute-commands:
+  keep_serv00:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Set up SSHPass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Install jq
+        run: sudo apt-get install -y jq 
 
-      - name: Get ACCOUNTS_JSON
-        id: get-accounts
+      - name: Execute SSH Login Script
         run: |
           echo "$SERVERS_JSON" > servers.json
+          chmod +x ./keep.sh 
+          ./keep.sh
         env:
-          SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
-        # 从 GitHub Secrets 获取 ACCOUNTS_JSON 变量，并保存到文件 accounts.json
-
-      - name: Execute SSH Commands
-        run: ./keep.sh
+          PATH: /usr/bin:$PATH
