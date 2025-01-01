@@ -6,26 +6,11 @@ SCRIPT_PATH="/root/keep.sh"                    # 脚本路径
 export CFIP=${CFIP:-'www.visa.com.tw'}         # 优选域名或优选ip
 export CFPORT=${CFIPPORT:-'443'}               # 优选域名或优选ip对应端口
 
-# 从servers.txt文件读取服务器配置信息并解析为关联数组
-servers=()
-if [ -f "servers.txt" ]; then
-    while IFS= read -r line; do
-        key=$(echo "$line" | cut -d':' -f1)
-        value=$(echo "$line" | cut -d':' -f2-)
-        servers["$key"]="$value"
-    done < servers.txt
-else
-    red "未找到servers.txt文件，请确保该文件存在且配置正确！"
-    exit 1
-fi
-
 # 定义颜色
 red() { echo -e "\e[1;91m$1\033[0m"; }
 green() { echo -e "\e[1;32m$1\033[0m"; }
 yellow() { echo -e "\e[1;33m$1\033[0m"; }
 purple() { echo -e "\e[1;35m$1\033[0m"; }
-
-
 
 
 # 检查 TCP 端口是否通畅
@@ -67,11 +52,16 @@ run_remote_command() {
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
 
-# 循环遍历服务器列表检测（使用从servers.txt解析出的servers）
-for host in "${!servers[@]}"; do
-    echo "Current host value: $host"
-    echo "Servers array content: ${servers[@]}"
-    IFS=':' read -r ssh_user ssh_pass tcp_port udp1_port udp2_port argo_domain argo_auth <<< "${servers[$host]}"
+# 从servers.txt读取服务器列表
+while IFS= read -r line; do
+    host=$(echo "$line" | cut -d':' -f1)
+    ssh_user=$(echo "$line" | cut -d':' -f2)
+    ssh_pass=$(echo "$line" | cut -d':' -f3)
+    tcp_port=$(echo "$line" | cut -d':' -f4)
+    udp1_port=$(echo "$line" | cut -d':' -f5)
+    udp2_port=$(echo "$line" | cut -d':' -f6)
+    argo_domain=$(echo "$line" | cut -d':' -f7)
+    argo_auth=$(echo "$line" | cut -d':' -f8)
 
     tcp_attempt=0
     argo_attempt=0
@@ -93,7 +83,7 @@ for host in "${!servers[@]}"; do
 
     # 检查 Argo 隧道
     while [ $argo_attempt -lt $max_attempts ]; do
-        if check_argo_tunnel "$argo_domain"); then
+        if check_argo_tunnel "$argo_domain"; then
             green "$time  Argo 隧道在线 Argo域名: $argo_domain   账户: $ssh_user\n"
             argo_attempt=0
             break
@@ -116,4 +106,4 @@ for host in "${!servers[@]}"; do
             red "$time  连接失败，请检查你的账户密码 服务器: $host  账户: $ssh_user"
         fi
     fi
-done
+done < servers.txt
