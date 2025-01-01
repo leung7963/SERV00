@@ -5,14 +5,19 @@
 SCRIPT_PATH="/root/keep.sh"                    # 脚本路径
 export CFIP=${CFIP:-'www.visa.com.tw'}         # 优选域名或优选ip
 export CFPORT=${CFIPPORT:-'443'}               # 优选域名或优选ip对应端口
- 
- # serv00或ct8服务器及端口配置
-declare -A servers=(  # 账号:密码:tcp端口:udp1端口:udp2端口:argo域名:Argo隧道密钥(json或token) 
-    ["s0.serv00.com"]='abcd:abd12345678:1234:2345:3455:s0.2go.ync.mn:{"AccountTag":"8b9724","TunnelSecret":"C+OA5z9UHZ0","TunnelID":"28125b91-3430"}'
-    ["s1.serv00.com"]='abcd:dbc12345678:1234:2345:3455:s1.2go.ync.mn:{"AccountTag":"8b9724","TunnelSecret":"C+OA5z9UHZ0","TunnelID":"28125b91-3430"}'
-    ["s2.serv00.com"]='abcd:avd12345678:1234:2345:3455:s2.2go.ync.mn:{"AccountTag":"8b9724","TunnelSecret":"C+OA5z9UHZ0","TunnelID":"28125b91-3430"}'
-    # 添加更多服务器......
-)
+
+# 从servers.json文件读取服务器配置信息并解析为关联数组
+servers=()
+if [ -f "servers.json" ]; then
+    while IFS= read -r line; do
+        key=$(echo "$line" | cut -d':' -f1 | tr -d '"')
+        value=$(echo "$line" | cut -d':' -f2- | tr -d '"')
+        servers["$key"]="$value"
+    done < <(jq -r 'to_entries |.[] | [.key,.value] | @csv' servers.json)
+else
+    red "servers.json文件不存在，请检查！"
+    exit 1
+fi
 
 # 定义颜色
 red() { echo -e "\e[1;91m$1\033[0m"; }
@@ -43,13 +48,13 @@ clear
 # 添加定时任务
 add_cron_job() {
     if [ -f /etc/alpine-release ]; then
-        if ! command -v crond >/dev/null 2>&1; then
+        if! command -v crond >/dev/null 2>&1; then
             apk add --no-cache cronie bash >/dev/null 2>&1 &
             rc-update add crond && rc-service crond start
         fi
     fi
     # 检查定时任务是否已经存在
-    if ! crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
+    if! crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
         (crontab -l 2>/dev/null; echo "*/2 * * * * /bin/bash $SCRIPT_PATH >> /root/keep_00.log 2>&1") | crontab -
         green "已添加计划任务，每两分钟执行一次"
     else
@@ -97,7 +102,7 @@ run_remote_command() {
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
 
-# 循环遍历服务器列表检测
+# 循环遍历服务器列表检测（这里使用从servers.json解析出的servers）
 for host in "${!servers[@]}"; do
     IFS=':' read -r ssh_user ssh_pass tcp_port udp1_port udp2_port argo_domain argo_auth <<< "${servers[$host]}"
 
