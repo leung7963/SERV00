@@ -35,23 +35,6 @@ install_packages() {
 install_packages
 clear
 
-# 添加定时任务
-add_cron_job() {
-    if [ -f /etc/alpine-release ]; then
-        if! command -v crond >/dev/null 2>&1; then
-            apk add --no-cache cronie bash >/dev/null 2>&1 &
-            rc-update add crond && rc-service crond start
-        fi
-    fi
-    # 检查定时任务是否已经存在
-    if! crontab -l 2>/dev/null | grep -q "$SCRIPT_PATH"; then
-        (crontab -l 2>/dev/null; echo "*/2 * * * * /bin/bash $SCRIPT_PATH >> /root/keep_00.log 2>&1") | crontab -
-        green "已添加计划任务，每两分钟执行一次"
-    else
-        purple "计划任务已存在，跳过添加计划任务"
-    fi
-}
-add_cron_job
 
 # 检查 TCP 端口是否通畅
 check_tcp_port() {
