@@ -38,16 +38,8 @@ check_argo_tunnel() {
 
 # 执行远程命令
 run_remote_command() {
-    local host=$1
-    local ssh_user=$2
-    local ssh_pass=$3
-    local tcp_port=$4
-    local udp1_port=$5
-    local udp2_port=$6
-    local argo_domain=${7}
-    local argo_auth=${8}
 
-    remote_command="VMESS_PORT=$tcp_port HY2_PORT=$udp1_port TUIC_PORT=$udp2_port ARGO_DOMAIN=$argo_domain ARGO_AUTH='$argo_auth' CFIP=$CFIP CFPORT=$CFPORT bash <(curl -Ls https://raw.githubusercontent.com/eooce/sing-box/main/sb_00.sh)"
+    remote_command="bash <(curl -Ls https://raw.githubusercontent.com/leung7963/SERV00/main/resrart.sh)"
     
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
