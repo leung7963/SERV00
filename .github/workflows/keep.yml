@@ -19,8 +19,9 @@ jobs:
 
       - name: Execute SSH Login Script
         run: |
+          echo "$SERVERS_JSON" > servers.json
           chmod +x ./keep.sh 
-          ./keep.sh
+          ./keep.sh servers.json
         env:
           PATH: /usr/bin:$PATH
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
