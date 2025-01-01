@@ -39,7 +39,7 @@ check_argo_tunnel() {
 # 执行远程命令
 run_remote_command() {
 
-    remote_command="bash <(curl -Ls https://raw.githubusercontent.com/leung7963/SERV00/main/resrart.sh)"
+    remote_command="bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)"
     
     sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
 }
