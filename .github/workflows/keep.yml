@@ -1,0 +1,23 @@
+name: keep
+
+on:
+  workflow_dispatch: # 手动触发工作流
+
+
+jobs:
+  execute-commands:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSHPass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Get ACCOUNTS_JSON
+        id: get-accounts
+        run: |
+          echo "$SERVERS_JSON" > servers.json
+        env:
+          SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
+        # 从 GitHub Secrets 获取 ACCOUNTS_JSON 变量，并保存到文件 accounts.json
+
+      - name: Execute SSH Commands
+        run: ./keep.sh
