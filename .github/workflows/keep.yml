@@ -1,4 +1,4 @@
-name: 'GitHub Actions '
+name: 'KEEP SERV00'
 
 on:
   workflow_dispatch:
@@ -12,14 +12,9 @@ jobs:
 
       - name: Set up environment variables
         env:
-          CFIP: ${{ secrets.CFIP }}  # 从 GitHub 仓库 Secrets 中获取优选域名或优选ip，需提前在仓库 Secrets 里设置好该值
-          CFPORT: ${{ secrets.CFPORT }}  # 从 GitHub 仓库 Secrets 中获取对应端口，同样需提前设置好
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
         run: |
-          echo "CFIP=$CFIP" >> $GITHUB_ENV
-          echo "CFPORT=$CFPORT" >> $GITHUB_ENV
           echo "$SERVERS_JSON" > servers.txt
-
       - name: Install required packages
         run: |
           sudo apt-get update  # 更新软件包列表，针对 Ubuntu 系统，其他系统对应修改此命令
