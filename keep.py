@@ -3,24 +3,23 @@ import requests
 import time
 from datetime import datetime
 import re
-import json
 
 # 此版本无哪吒，只保活节点，将此文件放到vps，填写以下服务器配置后运行即可
 SCRIPT_PATH = "/root/keep.sh"  # 脚本路径
 CFIP = 'www.visa.com.tw'  # 优选域名或优选ip，这里设置默认值，后续可修改
 CFPORT = '443'  # 优选域名或优选ip对应端口
 
-# 从servers.json文件获取服务器配置信息
+# 初始化servers字典，后续从文件读取填充
 servers = {}
-try:
-    with open('servers.json', 'r') as file:
-        servers = json.load(file)
-except FileNotFoundError:
-    print("servers.json文件不存在，请确保该文件存在且格式正确！")
-    raise SystemExit(1)
-except json.JSONDecodeError:
-    print("servers.json文件内容格式有误，请检查文件内容！")
-    raise SystemExit(1)
+
+# 从servers.txt文件读取服务器相关配置信息并填充servers字典
+with open('servers.txt', 'r') as file:
+    for line in file.readlines():
+        parts = line.strip().split(':')
+        if len(parts) >= 7:
+            host = parts[0]
+            server_info = ':'.join(parts[1:])
+            servers[host] = server_info
 
 
 # 定义输出颜色相关函数（这里简单模拟，实际在终端中显示彩色可能需要更多处理）
@@ -55,7 +54,7 @@ def install_packages():
     else:
         print(red("不支持的系统架构！"))
         raise SystemExit(1)
-    subprocess.Popen(f"{package_manager} sshpass curl netcat-openbsd jq cron", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen(f"{package_manager} sshpass curl netcat-openbsd jq cron", shell=True, stdout=subprocess.DEVVOID, stderr=subprocess.DEVVOID)
 
 
 def add_cron_job():
@@ -64,7 +63,7 @@ def add_cron_job():
     """
     if subprocess.run(["test", "-f", "/etc/alpine-release"], check=True).returncode == 0:
         if subprocess.run(["command", "-v", "crond"], check=True).returncode!= 0:
-            subprocess.Popen("apk add --no-cache cronie bash", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.Popen("apk add --no-cache cronie bash", shell=True, stdout=subprocess.DEVVOID, stderr=subprocess.DEVVOID)
             # 这里假设rc-update和rc-service命令可用，实际可能需要更多判断等操作
             subprocess.run("rc-update add crond", shell=True, check=True)
             subprocess.run("rc-service crond start", shell=True, check=True)
