@@ -69,6 +69,8 @@ run_remote_command() {
 
 # 循环遍历服务器列表检测（使用从servers.txt解析出的servers）
 for host in "${!servers[@]}"; do
+    echo "Current host value: $host"
+    echo "Servers array content: ${servers[@]}"
     IFS=':' read -r ssh_user ssh_pass tcp_port udp1_port udp2_port argo_domain argo_auth <<< "${servers[$host]}"
 
     tcp_attempt=0
