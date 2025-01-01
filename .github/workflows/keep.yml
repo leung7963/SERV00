@@ -20,5 +20,4 @@ jobs:
         # 从 GitHub Secrets 获取 ACCOUNTS_JSON 变量，并保存到文件 accounts.json
 
       - name: Execute SSH Commands
-        run: |
-          bash keep.sh
+        run: ./keep.sh
