@@ -16,12 +16,6 @@ jobs:
       - name: Install jq
         run: sudo apt-get install -y jq 
 
-      - name: Get ACCOUNTS_JSON
-        id: get-accounts
-        run: |
-          echo "$SERVERS_JSON" > servers.json
-        env:
-          SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
 
       - name: Execute SSH Login Script
         run: |
@@ -29,3 +23,4 @@ jobs:
           ./keep.sh
         env:
           PATH: /usr/bin:$PATH
+          SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
