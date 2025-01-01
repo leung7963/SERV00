@@ -2,34 +2,28 @@ name: 'GitHub Actions '
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '1 */6 * * *'
+
 jobs:
-  ddy:
-    runs-on: ubuntu-latest
+  server-maintenance-job:
+    runs-on: ubuntu-latest  # 选择运行的系统环境，这里选择最新的 Ubuntu 系统，也可按需更换
     steps:
-      - name: Set time zone
-        uses: szenius/set-timezone@v1.2
-        with:
-          timezoneLinux: "Asia/Shanghai"
-          timezoneMacos: "Asia/Shanghai"
-          timezoneWindows: "China Standard Time"
-      - name: Checkout
-        uses: actions/checkout@v4.1.1
-      - name: 'Set up Python'
-        uses: actions/setup-python@v5.0.0
-        with:
-          python-version: 3.8
-      - name: 'Install dependencies'
-        run: python -m pip install --upgrade pip
-      - name: 'Install requirements'
-        run: pip install -r ./requirements.txt
-      - name: Get A_JSON
-        id: get-accounts
-        run: |
-          echo "$SERVERS_JSON" > servers.txt
+      - name: Checkout code
+        uses: actions/checkout@v2  # 拉取仓库代码到运行环境
+
+      - name: Set up environment variables
         env:
+          CFIP: ${{ secrets.CFIP }}  # 从 GitHub 仓库 Secrets 中获取优选域名或优选ip，需提前在仓库 Secrets 里设置好该值
+          CFPORT: ${{ secrets.CFPORT }}  # 从 GitHub 仓库 Secrets 中获取对应端口，同样需提前设置好
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
-      - name: Execute SSH Login Script
         run: |
-          python keep.py
+          echo "CFIP=$CFIP" >> $GITHUB_ENV
+          echo "CFPORT=$CFPORT" >> $GITHUB_ENV
+          echo "$SERVERS_JSON" > servers.txt
+
+      - name: Install required packages
+        run: |
+          sudo apt-get update  # 更新软件包列表，针对 Ubuntu 系统，其他系统对应修改此命令
+          sudo apt-get install -y sshpass curl netcat-openbsd jq cron  # 安装脚本执行所需的相关工具包，根据实际需要调整安装命令（比如如果是 CentOS 等系统需要用 yum 命令安装）
+
+      - name: Execute keep.sh script
+        run: bash keep.sh  # 执行 keep.sh 脚本，进行服务器相关检测和操作
