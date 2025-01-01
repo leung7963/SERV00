@@ -15,10 +15,9 @@ jobs:
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
         run: |
           echo "$SERVERS_JSON" > servers.txt
-      - name: Install required packages
-        run: |
-          sudo apt-get update  # 更新软件包列表，针对 Ubuntu 系统，其他系统对应修改此命令
-          sudo apt-get install -y sshpass curl netcat-openbsd jq cron  # 安装脚本执行所需的相关工具包，根据实际需要调整安装命令（比如如果是 CentOS 等系统需要用 yum 命令安装）
+      #- name: Install required packages
+        #run: |
+          #sudo apt-get install -y sshpass curl netcat-openbsd jq  # 安装脚本执行所需的相关工具包，根据实际需要调整安装命令（比如如果是 CentOS 等系统需要用 yum 命令安装）
 
-      - name: Execute keep.sh script
+      - name: Execute KEEP
         run: bash keep.sh  # 执行 keep.sh 脚本，进行服务器相关检测和操作
