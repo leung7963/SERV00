@@ -13,6 +13,7 @@ purple() { echo -e "\e[1;35m$1\033[0m"; }
 check_nezha_agent() {
     NEZHA_API="$NEZHA_URL/api/v1/server/list"
     response=$(curl -s -H "Authorization: $API_TOKEN" "$NEZHA_API")
+    echo $response
     
     if [ $? -ne 0 ]; then
         red "请求失败，请检查您的哪吒URL或api_token"
