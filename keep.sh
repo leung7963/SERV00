@@ -13,7 +13,7 @@ purple() { echo -e "\e[1;35m$1\033[0m"; }
 check_nezha_agent() {
     NEZHA_API="$NEZHA_URL/api/v1/server/list"
     response=$(curl -s -H "Authorization: $API_TOKEN" "$NEZHA_API")
-    echo $response
+    #echo $response
     
     if [ $? -ne 0 ]; then
         red "请求失败，请检查您的哪吒URL或api_token"
@@ -139,7 +139,7 @@ for line in "${lines[@]}"; do
     done
    
     # 如果3次检测失败，则执行 SSH 连接并执行远程命令
-    if [ $tcp_attempt -ge 3 ] || [ $argo_attempt -ge 3 ]; then
+    if [ $tcp_attempt -ge 3 ] || [ $argo_attempt -ge 3 ] || [ $nezha_attempt -ge 3 ]; then
         yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $remarks"
         if sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" -q exit; then
             green "$time  SSH远程连接成功 服务器: $host  账户 : $remarks"
