@@ -108,7 +108,7 @@ for line in "${lines[@]}"; do
             nezha_attempt=0
             break
         else
-            red "$time  Nezha agent离线 服务器: $host  账户: $ssh_user"
+            red "$time  Nezha agent离线 服务器: $host  账户: $remarks"
             sleep 5
             nezha_attempt=$((nezha_attempt+1))
         fi
