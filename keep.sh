@@ -20,7 +20,7 @@ check_nezha_agent() {
     fi
     
     local current_time=$(date +%s)
-    local target_agent="S${1}"
+    local target_agent=$remark
     local agent_found=false
     local agent_online=false
 
@@ -92,9 +92,7 @@ for line in "${lines[@]}"; do
     argo_domain=$(echo "$line" | cut -d':' -f5)
     remarks=$(echo "$line" | cut -d':' -f6)
     
-    nezha_agent_name=${host%%.*}
-    nezha_index=${nezha_agent_name:1}
-
+    
     tcp_attempt=0
     argo_attempt=0
     max_attempts=3
@@ -102,17 +100,7 @@ for line in "${lines[@]}"; do
     
     
     # 检查 Nezha agent
-    while [ $nezha_attempt -lt $max_attempts ]; do
-        if check_nezha_agent "$nezha_index"; then
-            green "$time  Nezha agent在线 服务器: $host  账户: $remark"
-            nezha_attempt=0
-            break
-        else
-            red "$time  Nezha agent离线 服务器: $host  账户: $ssh_user"
-            sleep 5
-            nezha_attempt=$((nezha_attempt+1))
-        fi
-    done
+    
 
     # 检查 TCP 端口
     for (( ; tcp_attempt < max_attempts; tcp_attempt++ )); do
