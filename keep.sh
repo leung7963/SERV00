@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # 此版本无哪吒，只保活节点,将此文件放到vps，填写以下服务器配置后bash keep.sh运行即可
-NEZHA_URL="http://nz.0662.ip-ddns.com"
+NEZHA_URL="https://nz.0662.ip-ddns.com"
 # 定义颜色
 red() { echo -e "\e[1;91m$1\033[0m"; }
 green() { echo -e "\e[1;32m$1\033[0m"; }
