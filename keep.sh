@@ -100,7 +100,8 @@ for line in "${lines[@]}"; do
     
     
     # 检查 Nezha agent
-    while [ $nezha_attempt -lt $max_attempts ]; do
+    for (( ; nezha_attempt < max_attempts; nezha_attempt++ )); do
+    #while [ $nezha_attempt -lt $max_attempts ]; do
         if check_nezha_agent "$remark"; then
             green "$time  Nezha agent在线 服务器: $host  账户: $remark"
             nezha_attempt=0
