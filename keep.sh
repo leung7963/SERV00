@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # 此版本无哪吒，只保活节点,将此文件放到vps，填写以下服务器配置后bash keep.sh运行即可
-
+NEZHA_URL="http://nz.0662.ip-ddns.com"
 # 定义颜色
 red() { echo -e "\e[1;91m$1\033[0m"; }
 green() { echo -e "\e[1;32m$1\033[0m"; }
@@ -100,7 +100,17 @@ for line in "${lines[@]}"; do
     
     
     # 检查 Nezha agent
-    
+    while [ $nezha_attempt -lt $max_attempts ]; do
+        if check_nezha_agent "$remark"; then
+            green "$time  Nezha agent在线 服务器: $host  账户: $remark"
+            nezha_attempt=0
+            break
+        else
+            red "$time  Nezha agent离线 服务器: $host  账户: $ssh_user"
+            sleep 5
+            nezha_attempt=$((nezha_attempt+1))
+        fi
+    done
 
     # 检查 TCP 端口
     for (( ; tcp_attempt < max_attempts; tcp_attempt++ )); do
