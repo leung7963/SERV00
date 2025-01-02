@@ -67,7 +67,7 @@ for line in "${lines[@]}"; do
             break
         else
             red "$time  TCP端口不通 服务器: $host  账户: $remarks"
-            sleep 1
+            sleep 5
         fi
     done
 
@@ -79,7 +79,7 @@ for line in "${lines[@]}"; do
             break
         else
             red "$time  Argo 隧道离线 账户: $remarks"
-            sleep 1
+            sleep 5
         fi
     done
    
