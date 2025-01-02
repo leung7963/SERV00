@@ -9,6 +9,44 @@ yellow() { echo -e "\e[1;33m$1\033[0m"; }
 purple() { echo -e "\e[1;35m$1\033[0m"; }
 
 
+# 检查哪吒 agent 是否在线
+check_nezha_agent() {
+    NEZHA_API="$NEZHA_URL/api/v1/server/list"
+    response=$(curl -s -H "Authorization: $API_TOKEN" "$NEZHA_API")
+    
+    if [ $? -ne 0 ]; then
+        red "请求失败，请检查您的哪吒URL或api_token"
+        return 1
+    fi
+    
+    local current_time=$(date +%s)
+    local target_agent="S${1}"
+    local agent_found=false
+    local agent_online=false
+
+    while read -r server; do
+        server_name=$(echo "$server" | jq -r '.name')
+        last_active=$(echo "$server" | jq -r '.last_active')
+
+        if [[ $server_name == $target_agent ]]; then
+            agent_found=true
+            if [ $(( current_time - last_active )) -le 30 ]; then
+                agent_online=true
+                break
+            fi
+        fi
+    done < <(echo "$response" | jq -c '.result[]')
+
+    if ! $agent_found; then
+        red "未找到 agent: $target_agent"
+        return 1
+    elif $agent_online; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # 检查 TCP 端口是否通畅
 check_tcp_port() {
     local host=$1
@@ -53,11 +91,28 @@ for line in "${lines[@]}"; do
     tcp_port=$(echo "$line" | cut -d':' -f4)
     argo_domain=$(echo "$line" | cut -d':' -f5)
     remarks=$(echo "$line" | cut -d':' -f6)
+    
+    nezha_agent_name=${host%%.*}
+    nezha_index=${nezha_agent_name:1}
 
     tcp_attempt=0
     argo_attempt=0
     max_attempts=3
     time=$(TZ="Asia/Hong_Kong" date +"%Y-%m-%d %H:%M")
+    
+    
+    # 检查 Nezha agent
+    while [ $nezha_attempt -lt $max_attempts ]; do
+        if check_nezha_agent "$nezha_index"; then
+            green "$time  Nezha agent在线 服务器: $host  账户: $remark"
+            nezha_attempt=0
+            break
+        else
+            red "$time  Nezha agent离线 服务器: $host  账户: $ssh_user"
+            sleep 5
+            nezha_attempt=$((nezha_attempt+1))
+        fi
+    done
 
     # 检查 TCP 端口
     for (( ; tcp_attempt < max_attempts; tcp_attempt++ )); do
