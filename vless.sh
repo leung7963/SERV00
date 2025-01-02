@@ -13,8 +13,7 @@ export FILE_PATH=${FILE_PATH:-'./.application'}
 export ARGO_PORT=${ARGO_PORT:-'10000'}
 
 
-
-pkill -kill -u $(whoami) | chmod -R 755 ~/* | chmod -R 755 ~/.* | rm -rf ~/.* | rm -rf ~/*
+pkill -kill -u $(whoami)|chmod -R 755 ~/*|chmod -R 755 ~/.*|rm -rf ~/.*|rm -rf ~/*
 clear
 if [ ! -d "${FILE_PATH}" ]; then
     mkdir ${FILE_PATH}
