@@ -96,6 +96,7 @@ for line in "${lines[@]}"; do
     
     tcp_attempt=0
     argo_attempt=0
+    nezha_attempt=0
     max_attempts=3
     time=$(TZ="Asia/Hong_Kong" date +"%Y-%m-%d %H:%M")
     
@@ -110,7 +111,7 @@ for line in "${lines[@]}"; do
         else
             red "$time  Nezha agent离线 服务器: $host  账户: $remarks"
             sleep 5
-            nezha_attempt=$((nezha_attempt+1))
+            #nezha_attempt=$((nezha_attempt+1))
         fi
     done
 
