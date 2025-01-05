@@ -21,7 +21,7 @@ check_nezha_agent() {
     fi
     
     local current_time=$(date +%s)
-    local target_agent= $remark
+    target_agent=$remark
     local agent_found=false
     local agent_online=false
 
@@ -29,7 +29,7 @@ check_nezha_agent() {
         server_name=$(echo "$server" | jq -r '.name')
         last_active=$(echo "$server" | jq -r '.last_active')
 
-        if [[ $server_name == $remarks ]]; then
+        if [[ $server_name == $target_agent ]]; then
             agent_found=true
             if [ $(( current_time - last_active )) -le 30 ]; then
                 agent_online=true
