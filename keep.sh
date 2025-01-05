@@ -76,7 +76,7 @@ run_remote_command() {
 
     remote_command="bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)"
     
-    sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" "$remote_command"
+    sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$ssh_user@$host" "$remote_command"
 }
 
 # 从servers.txt读取服务器列表
@@ -142,7 +142,7 @@ for line in "${lines[@]}"; do
     # 如果3次检测失败，则执行 SSH 连接并执行远程命令
     if [ $tcp_attempt -ge 3 ] || [ $argo_attempt -ge 3 ] || [ $nezha_attempt -ge 3 ]; then
         yellow "$time 多次检测失败，尝试通过SSH连接并远程执行命令  服务器: $host  账户: $remarks"
-        if sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no "$ssh_user@$host" -q exit; then
+        if sshpass -p "$ssh_pass" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 "$ssh_user@$host" -q exit; then
             green "$time  SSH远程连接成功 服务器: $host  账户 : $remarks"
             output=$(run_remote_command "$host" "$ssh_user" "$ssh_pass" "$tcp_port" "$argo_domain" "$remarks")
             yellow "远程命令执行结果：\n"
