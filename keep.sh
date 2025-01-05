@@ -21,7 +21,7 @@ check_nezha_agent() {
     fi
     
     local current_time=$(date +%s)
-    target_agent=$remark
+    local target_agent=$remark
     local agent_found=false
     local agent_online=false
 
