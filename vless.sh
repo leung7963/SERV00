@@ -63,7 +63,7 @@ generate_config() {
   "dns": {
     "servers": [
       {
-        "address": "1.1.1.1",
+        "address": "8.8.8.8",
         "address_resolver": "local"
       },
       {
@@ -91,85 +91,38 @@ generate_config() {
     }
 
  ],
-  "outbounds":[
-        {
-            "protocol":"freedom",
-            "tag":"direct"
-        },
-        {
-            "protocol":"blackhole",
-            "settings":{
-
-            },
-            "tag":"block"
-        },
-        {
-            "protocol":"wireguard",
-            "settings":{
-                "secretKey":"YFYOAdbw1bKTHlNNi+aEjBM3BO7unuFC5rOkMRAz9XY=",
-                "address":[
-                    "172.16.0.2/32",
-                    "2606:4700:110:8a36:df92:102a:9602:fa18/128"
-                ],
-                "peers":[
-                    {
-                        "publicKey":"bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-                        "allowedIPs":[
-                            "0.0.0.0/0",
-                            "::/0"
-                        ],
-                        "endpoint":"engage.cloudflareclient.com:2408"
-                    }
-                ],
-                "reserved":[
-                    78,
-                    135,
-                    76
-                ],
-                "mtu":1280
-            },
-            "tag":"wireguard"
-        },
-        {
-            "protocol":"freedom",
-            "settings":{
-                "domainStrategy":"UseIPv4"
-            },
-            "proxySettings":{
-                "tag":"wireguard"
-            },
-            "tag":"warp-IPv4"
-        },
-        {
-            "protocol":"freedom",
-            "settings":{
-                "domainStrategy":"UseIPv6"
-            },
-            "proxySettings":{
-                "tag":"wireguard"
-            },
-            "tag":"warp-IPv6"
-        }
-    ],
-    "routing":{
-        "domainStrategy":"AsIs",
-        "rules":[
-            {
-                "type":"field",
-                "domain":[
-                    "api.openai.com"
-                ],
-                "outboundTag":"warp-IPv4"
-            },
-            {
-                "type":"field",
-                "domain":[
-                    "geosite:openai"
-                ],
-                "outboundTag":"warp-IPv6"
-            }
-        ]
-        }
+  "outbounds": [
+    {
+      "type": "wireguard",
+      "tag": "warp",
+      "server": "engage.cloudflareclient.com",
+      "server_port": 2408,
+      "system_interface": false,
+      "local_address": ["198.18.0.1/32", "fd00::1/128"],
+      "private_key": "WG_PRIVATE_KEY",
+      "peer_public_key": "WG_PEER_PUBLIC_KEY",
+      "reserved": [0, 0, 0],
+      "mtu": 1408
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "direct",
+      "tag": "WARP",
+      "detour": "warp",
+      "domain_strategy": "prefer_ipv6"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    }
+  ]
 }
 
 EOF
