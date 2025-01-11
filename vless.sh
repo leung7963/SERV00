@@ -92,15 +92,43 @@ generate_config() {
 
  ],
   "outbounds": [
-    {
-    "tag": "direct",
-    "type": "direct"
+     {
+        "type": "wireguard",
+        "tag": "wg",
+        "server": "162.159.192.200",
+        "server_port": 4500,
+        "local_address": [
+                "172.16.0.2/32",
+                "2606:4700:110:8f77:1ca9:f086:846c:5f9e/128"
+        ],
+        "private_key": "wIxszdR2nMdA7a2Ul3XQcniSfSZqdqjPb6w6opvf5AU=",
+        "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+        "reserved": [
+            126,
+            246,
+            173
+        ]
     },
     {
-    "tag": "block",
-    "type": "block"
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
     }
-  ]
+  ],
+   "route": {
+    "rules": [
+    {
+     "domain": [
+     "oh.my.god"
+      ],
+     "outbound": "wg"
+    }
+    ],
+    "final": "wg"
+    }
 }
 
 EOF
