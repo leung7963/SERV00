@@ -93,34 +93,12 @@ generate_config() {
  ],
   "outbounds": [
     {
-      "type": "wireguard",
-      "tag": "warp",
-      "server": "engage.cloudflareclient.com",
-      "server_port": 2408,
-      "system_interface": false,
-      "local_address": ["198.18.0.1/32", "fd00::1/128"],
-      "private_key": "WG_PRIVATE_KEY",
-      "peer_public_key": "WG_PEER_PUBLIC_KEY",
-      "reserved": [0, 0, 0],
-      "mtu": 1408
+    "tag": "direct",
+    "type": "direct"
     },
     {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "type": "direct",
-      "tag": "WARP",
-      "detour": "warp",
-      "domain_strategy": "prefer_ipv6"
-    },
-    {
-      "type": "dns",
-      "tag": "dns-out"
-    },
-    {
-      "type": "block",
-      "tag": "block"
+    "tag": "block",
+    "type": "block"
     }
   ]
 }
