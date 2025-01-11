@@ -169,7 +169,9 @@ generate_config() {
                 "outboundTag":"warp-IPv6"
             }
         ]
+        }
 }
+
 EOF
 }
 generate_config
