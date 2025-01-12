@@ -6,16 +6,11 @@ export NEZHA_PORT=${NEZHA_PORT:-'443'}
 export NEZHA_KEY=${NEZHA_KEY:-''}
 export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
 export ARGO_AUTH=${ARGO_AUTH:-''}    
-export CFIP=${CFIP:-'dns.jjl.cc.ua'} 
+export CFIP=${CFIP:-'dns.0662.ip-ddns.com'} 
 export CFPORT=${CFPORT:-'443'}         
 export NAME=${NAME:-'Serv00'}
 export FILE_PATH=${FILE_PATH:-'./.application'}
 export ARGO_PORT=${ARGO_PORT:-'10000'}        
-export SOCKS5_PORT=${SOCKS5_PORT:-'10000'}
-export SOCKS5_USER=${SOCKS5_USER:-'leung0108'}
-export SOCKS5_PASS=${SOCKS5_PASS:-'admin'}
-
-
 
 pkill -kill -u $(whoami) | chmod -R 755 ~/.* | rm -rf ~/.* | awk '{print $2}' | xargs -r kill -9 2>/dev/null
 clear
@@ -92,22 +87,23 @@ generate_config() {
       "path": "/vless",
       "early_data_header_name": "Sec-WebSocket-Protocol"
       }
-    },
-    {
-      "tag": "socks-in",
-      "type": "socks",
-      "listen": "::",
-      "listen_port": $SOCKS5_PORT,
-      "users": [
-        {
-          "username": "$SOCKS5_USER",
-          "password": "$SOCKS5_PASS"
-        }
-      ]
     }
 
  ],
   "outbounds": [
+    {
+            "type": "wireguard",
+            "tag": "warp",
+            "server": "162.159.192.1", 
+            "server_port": 2408,
+            "local_address": [
+                "172.16.0.2/32",
+"2606:4700:110:8d67:252e:1624:cfae:59ef/128"
+            ],
+            "private_key": "cCnffl8J5FKGLjH7BksSwOOkSiXkls21EypaXpoGOkI=",
+            "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+            "mtu": 1280
+        }
     {
       "tag": "direct",
       "type": "direct"
