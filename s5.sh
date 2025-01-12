@@ -113,7 +113,7 @@ generate_config() {
       "tag": "block",
       "type": "block"
     }
-  ]
+  ],
   "route": {
     "rules": [
     {
