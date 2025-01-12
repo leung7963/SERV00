@@ -95,8 +95,8 @@ generate_config() {
      {
         "type": "wireguard",
         "tag": "wg",
-        "server": "162.159.192.200",
-        "server_port": 4500,
+        "server": "engage.cloudflareclient.com",
+        "server_port": 2408,
         "local_address": [
                 "172.16.0.2/32",
                 "2606:4700:110:8f77:1ca9:f086:846c:5f9e/128"
