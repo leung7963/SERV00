@@ -103,7 +103,7 @@ generate_config() {
             "private_key": "cCnffl8J5FKGLjH7BksSwOOkSiXkls21EypaXpoGOkI=",
             "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
             "mtu": 1280
-        }
+        },
     {
       "tag": "direct",
       "type": "direct"
