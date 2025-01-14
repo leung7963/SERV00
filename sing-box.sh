@@ -190,167 +190,76 @@ install_singbox() {
 cat > "${config_dir}" << EOF
 {
   "log": {
-    "disabled": false,
+    "disabled": true,
     "level": "info",
-    "output": "$work_dir/sb.log",
     "timestamp": true
   },
   "dns": {
     "servers": [
       {
-        "tag": "google",
-        "address": "tls://8.8.8.8"
+        "address": "1.1.1.1",
+        "address_resolver": "local"
+      },
+      {
+        "tag": "local",
+        "address": "local"
       }
     ]
   },
   "inbounds": [
-
+    {
+    "tag": "vless-ws-in",
+    "type": "vless",
+    "listen": "::",
+    "listen_port": $ARGO_PORT,
+    "users": [
+    {
+      "uuid": "$UUID"
+    }
   ],
+    "transport": {
+      "type": "ws",
+      "path": "/vless",
+      "early_data_header_name": "Sec-WebSocket-Protocol"
+      }
+    }
+
+ ],
   "outbounds": [
+    {
+            "type": "wireguard",
+            "tag": "warp",
+            "server": "162.159.192.1", 
+            "server_port": 2408,
+            "local_address": [
+                "172.16.0.2/32",
+"2606:4700:110:8d67:252e:1624:cfae:59ef/128"
+            ],
+            "private_key": "cCnffl8J5FKGLjH7BksSwOOkSiXkls21EypaXpoGOkI=",
+            "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+            "reserved":[0, 0, 0],
+            "mtu": 1280
+        },
     {
       "type": "direct",
       "tag": "direct"
     },
     {
-      "type": "direct",
-      "tag": "direct-ipv4-prefer-out",
-      "domain_strategy": "prefer_ipv4"
-    },
-    {
-      "type": "direct",
-      "tag": "direct-ipv4-only-out",
-      "domain_strategy": "ipv4_only"
-    },
-    {
-      "type": "direct",
-      "tag": "direct-ipv6-prefer-out",
-      "domain_strategy": "prefer_ipv6"
-    },
-    {
-      "type": "direct",
-      "tag": "direct-ipv6-only-out",
-      "domain_strategy": "ipv6_only"
-    },
-    {
-      "type": "wireguard",
-      "tag": "wireguard-out",
-      "server": "engage.cloudflareclient.com",
-      "server_port": 2408,
-      "local_address": [
-        "172.16.0.2/32",
-        "2606:4700:110:812a:4929:7d2a:af62:351c/128"
-      ],
-      "private_key": "gBthRjevHDGyV0KvYwYE52NIPy29sSrVr6rcQtYNcXA=",
-      "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-      "reserved": [
-        6,
-        146,
-        6
-      ]
-    },
-    {
-      "type": "direct",
-      "tag": "wireguard-ipv4-prefer-out",
-      "detour": "wireguard-out",
-      "domain_strategy": "prefer_ipv4"
-    },
-    {
-      "type": "direct",
-      "tag": "wireguard-ipv4-only-out",
-      "detour": "wireguard-out",
-      "domain_strategy": "ipv4_only"
-    },
-    {
-      "type": "direct",
-      "tag": "wireguard-ipv6-prefer-out",
-      "detour": "wireguard-out",
-      "domain_strategy": "prefer_ipv6"
-    },
-    {
-      "type": "direct",
-      "tag": "wireguard-ipv6-only-out",
-      "detour": "wireguard-out",
-      "domain_strategy": "ipv6_only"
+      "type": "block",
+      "tag": "block"
     }
   ],
   "route": {
-    "rule_set": [
-      {
-        "tag": "geosite-netflix",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-netflix.srs",
-        "update_interval": "1d"
-      },
-      {
-        "tag": "geosite-openai",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geosite/openai.srs",
-        "update_interval": "1d"
-      }
-    ],
     "rules": [
-      {
-        "rule_set": [
-          "geosite-netflix"
-        ],
-        "outbound": "wireguard-ipv6-only-out"
-      },
-      {
-        "domain": [
-          "api.statsig.com",
-          "browser-intake-datadoghq.com",
-          "cdn.openai.com",
-          "chat.openai.com",
-          "auth.openai.com",
-          "chat.openai.com.cdn.cloudflare.net",
-          "ios.chat.openai.com",
-          "o33249.ingest.sentry.io",
-          "openai-api.arkoselabs.com",
-          "openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net",
-          "openaicomproductionae4b.blob.core.windows.net",
-          "production-openaicom-storage.azureedge.net",
-          "static.cloudflareinsights.com"
-        ],
-        "domain_suffix": [
-          ".algolia.net",
-          ".auth0.com",
-          ".chatgpt.com",
-          ".challenges.cloudflare.com",
-          ".client-api.arkoselabs.com",
-          ".events.statsigapi.net",
-          ".featuregates.org",
-          ".identrust.com",
-          ".intercom.io",
-          ".intercomcdn.com",
-          ".launchdarkly.com",
-          ".oaistatic.com",
-          ".oaiusercontent.com",
-          ".observeit.net",
-          ".openai.com",
-          ".openaiapi-site.azureedge.net",
-          ".openaicom.imgix.net",
-          ".segment.io",
-          ".sentry.io",
-          ".stripe.com"
-        ],
-        "domain_keyword": [
-          "openaicom-api"
-        ],
-        "outbound": "wireguard-ipv6-prefer-out"
-      }
-    ],
-    "final": "direct"
-   },
-   "experimental": {
-      "cache_file": {
-      "enabled": true,
-      "path": "$work_dir/cache.db",
-      "cache_id": "mycacheid",
-      "store_fakeip": true
+    {
+     "domain": [
+     "oh.my.god"
+      ],
+     "outbound": "warp"
     }
-  }
+    ],
+    "final": "warp"
+    }
 }
 EOF
 }
