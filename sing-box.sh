@@ -15,8 +15,8 @@ skyblue() { echo -e "\e[1;36m$1\033[0m"; }
 reading() { read -p "$(red "$1")" "$2"; }
 
 # 定义常量
-server_name="sing-box"
-work_dir="/etc/sing-box"
+server_name="vless"
+work_dir="/etc/vless"
 config_dir="${work_dir}/config.json"
 client_dir="${work_dir}/url.txt"
 export vless_port=${PORT:-$(shuf -i 1000-65000 -n 1)}
@@ -204,96 +204,7 @@ cat > "${config_dir}" << EOF
     ]
   },
   "inbounds": [
-    {
-        "tag": "vless-reality-vesion",
-        "type": "vless",
-        "listen": "::",
-        "listen_port": $vless_port,
-        "users": [
-            {
-              "uuid": "$uuid",
-              "flow": "xtls-rprx-vision"
-            }
-        ],
-        "tls": {
-            "enabled": true,
-            "server_name": "www.iij.ad.jp",
-            "reality": {
-                "enabled": true,
-                "handshake": {
-                    "server": "www.iij.ad.jp",
-                    "server_port": 443
-                },
-                "private_key": "$private_key",
-                "short_id": [
-                  ""
-                ]
-            }
-        }
-    },
-    {
-        "tag": "vmess-ws",
-        "type": "vmess",
-        "listen": "::",
-        "listen_port": 8001,
-        "users": [
-        {
-            "uuid": "$uuid"
-        }
-    ],
-    "transport": {
-        "type": "ws",
-        "path": "/vmess-argo",
-        "early_data_header_name": "Sec-WebSocket-Protocol"
-        }
-    },
-    {
-        "tag": "hysteria2",
-        "type": "hysteria2",
-        "listen": "::",
-        "listen_port": $hy2_port,
-        "sniff": true,
-        "sniff_override_destination": false,
-        "users": [
-            {
-                "password": "$uuid"
-            }
-        ],
-        "ignore_client_bandwidth":false,
-        "masquerade": "https://bing.com",
-        "tls": {
-            "enabled": true,
-            "alpn": [
-                "h3"
-            ],
-            "min_version":"1.3",
-            "max_version":"1.3",
-            "certificate_path": "$work_dir/cert.pem",
-            "key_path": "$work_dir/private.key"
-        }
 
-    },
-    {
-        "tag": "tuic",
-        "type": "tuic",
-        "listen": "::",
-        "listen_port": $tuic_port,
-        "users": [
-          {
-            "uuid": "$uuid",
-            "password": "$password"
-          }
-        ],
-        "congestion_control": "bbr",
-        "tls": {
-            "enabled": true,
-            "alpn": [
-                "h3"
-            ],
-        "certificate_path": "$work_dir/cert.pem",
-        "key_path": "$work_dir/private.key"
-       }
-    }
   ],
   "outbounds": [
     {
