@@ -22,6 +22,7 @@ client_dir="${work_dir}/url.txt"
 export vless_port=${PORT:-$(shuf -i 1000-65000 -n 1)}
 export CFIP=${CFIP:-'www.visa.com.tw'} 
 export CFPORT=${CFPORT:-'443'} 
+export UUID=${UUID:-''}
 
 # 检查是否为root下运行
 [[ $EUID -ne 0 ]] && red "请在root用户下运行脚本" && exit 1
@@ -171,7 +172,6 @@ install_singbox() {
     nginx_port=$(($vless_port + 1)) 
     tuic_port=$(($vless_port + 2))
     hy2_port=$(($vless_port + 3)) 
-    uuid=$(cat /proc/sys/kernel/random/uuid)
     password=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
     output=$(/etc/sing-box/sing-box generate reality-keypair)
     private_key=$(echo "${output}" | awk '/PrivateKey:/ {print $2}')
@@ -211,7 +211,7 @@ cat > "${config_dir}" << EOF
     "tag": "vless-ws-in",
     "type": "vless",
     "listen": "::",
-    "listen_port": $ARGO_PORT,
+    "listen_port": $vless_port,
     "users": [
     {
       "uuid": "$UUID"
