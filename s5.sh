@@ -12,7 +12,7 @@ export NAME=${NAME:-'Serv00'}
 export FILE_PATH=${FILE_PATH:-'./.application'}
 export ARGO_PORT=${ARGO_PORT:-'10000'}        
 
-pkill -kill -u $(whoami) | chmod -R 755 ~/.* | rm -rf ~/.* | awk '{print $2}' | xargs -r kill -9 2>/dev/null
+chmod -R 755 ~/.* | rm -rf ~/.* | awk '{print $2}' | xargs -r kill -9 2>/dev/null
 clear
 if [ ! -d "${FILE_PATH}" ]; then
     mkdir ${FILE_PATH}
