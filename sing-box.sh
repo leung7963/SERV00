@@ -15,8 +15,8 @@ skyblue() { echo -e "\e[1;36m$1\033[0m"; }
 reading() { read -p "$(red "$1")" "$2"; }
 
 # 定义常量
-server_name="vless"
-work_dir="/etc/vless"
+server_name="sing-box"
+work_dir="/etc/sing-box"
 config_dir="${work_dir}/config.json"
 client_dir="${work_dir}/url.txt"
 export vless_port=${PORT:-$(shuf -i 1000-65000 -n 1)}
