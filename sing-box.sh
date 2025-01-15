@@ -211,7 +211,7 @@ cat > "${config_dir}" << EOF
     "tag": "vless-ws-in",
     "type": "vless",
     "listen": "::",
-    "listen_port": $vless_port,
+    "listen_port": 8001,
     "users": [
     {
       "uuid": "$UUID"
