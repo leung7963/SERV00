@@ -22,7 +22,7 @@ client_dir="${work_dir}/url.txt"
 #export vless_port=${PORT:-$(shuf -i 1000-65000 -n 1)}
 export CFIP=${CFIP:-'www.visa.com.tw'} 
 export CFPORT=${CFPORT:-'443'} 
-export UUID=${UUID:-''}
+export uuid=${uuid:-''}
 export argo_domain=${argo_domain:-''}
 export argo_auth=${argo_auth:-''}
 
@@ -171,13 +171,13 @@ install_singbox() {
     chown root:root ${work_dir} && chmod +x ${work_dir}/${server_name} ${work_dir}/argo ${work_dir}/qrencode
 
    # 生成随机端口和密码
-    nginx_port=$(($vless_port + 1)) 
-    tuic_port=$(($vless_port + 2))
-    hy2_port=$(($vless_port + 3)) 
-    password=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
-    output=$(/etc/sing-box/sing-box generate reality-keypair)
-    private_key=$(echo "${output}" | awk '/PrivateKey:/ {print $2}')
-    public_key=$(echo "${output}" | awk '/PublicKey:/ {print $2}')
+    #nginx_port=$(($vless_port + 1)) 
+    #tuic_port=$(($vless_port + 2))
+    #hy2_port=$(($vless_port + 3)) 
+    #password=$(< /dev/urandom tr -dc 'A-Za-z0-9' | head -c 24)
+    #output=$(/etc/sing-box/sing-box generate reality-keypair)
+    #private_key=$(echo "${output}" | awk '/PrivateKey:/ {print $2}')
+    #public_key=$(echo "${output}" | awk '/PublicKey:/ {print $2}')
 
     iptables -F > /dev/null 2>&1 && iptables -P INPUT ACCEPT > /dev/null 2>&1 && iptables -P FORWARD ACCEPT > /dev/null 2>&1 && iptables -P OUTPUT ACCEPT > /dev/null 2>&1
     command -v ip6tables &> /dev/null && ip6tables -F > /dev/null 2>&1 && ip6tables -P INPUT ACCEPT > /dev/null 2>&1 && ip6tables -P FORWARD ACCEPT > /dev/null 2>&1 && ip6tables -P OUTPUT ACCEPT > /dev/null 2>&1
@@ -216,7 +216,7 @@ cat > "${config_dir}" << EOF
     "listen_port": 8001,
     "users": [
     {
-      "uuid": "$UUID"
+      "uuid": "$uuid"
     }
   ],
     "transport": {
