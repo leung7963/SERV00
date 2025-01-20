@@ -6,7 +6,7 @@ export NEZHA_PORT=${NEZHA_PORT:-'443'}
 export NEZHA_KEY=${NEZHA_KEY:-''}
 export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
 export ARGO_AUTH=${ARGO_AUTH:-''}    
-export CFIP=${CFIP:-'dns.jjl.cc.ua'} 
+export CFIP=${CFIP:-'visa.com'} 
 export CFPORT=${CFPORT:-'443'}         
 export NAME=${NAME:-'Serv00'}
 export FILE_PATH=${FILE_PATH:-'./.application'}        
@@ -93,20 +93,6 @@ generate_config() {
  ],
   "outbounds": [
     {
-            "type": "wireguard",
-            "tag": "warp",
-            "server": "162.159.192.1", 
-            "server_port": 2408,
-            "local_address": [
-                "172.16.0.2/32",
-"2606:4700:110:8d67:252e:1624:cfae:59ef/128"
-            ],
-            "private_key": "cCnffl8J5FKGLjH7BksSwOOkSiXkls21EypaXpoGOkI=",
-            "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
-            "reserved":[0, 0, 0],
-            "mtu": 1280
-        },
-    {
       "type": "direct",
       "tag": "direct"
     },
@@ -114,20 +100,8 @@ generate_config() {
       "type": "block",
       "tag": "block"
     }
-  ],
-  "route": {
-    "rules": [
-    {
-     "domain": [
-     "oh.my.god"
-      ],
-     "outbound": "warp"
-    }
-    ],
-    "final": "warp"
-    }
+  ]
 }
-
 EOF
 }
 generate_config
