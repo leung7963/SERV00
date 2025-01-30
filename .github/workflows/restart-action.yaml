@@ -1,12 +1,9 @@
 name: restart
 
 on:
-  workflow_dispatch: # 手动触发工作流
+  workflow_dispatch:
   schedule:
    - cron: '0 8 1 * *'
-env:
-  TG_TOKEN: ${{ secrets.TG_TOKEN }}
-  CHAT_ID: ${{ secrets.CHAT_ID }}
 
 jobs:
   execute-commands:
@@ -21,7 +18,6 @@ jobs:
           echo "$SERVERS_JSON" > servers.txt
         env:
           SERVERS_JSON: ${{ secrets.SERVERS_JSON }}
-        # 从 GitHub Secrets 获取 ACCOUNTS_JSON 变量，并保存到文件 accounts.json
 
       - name: Generate SSH Commands
         id: generate-ssh-commands
@@ -30,12 +26,20 @@ jobs:
           while IFS= read -r account; do
             username=$(echo "$account" | cut -d':' -f2)
             password=$(echo "$account" | cut -d':' -f3)
-            ssh=$(echo "$account" |  cut -d':' -f1)
+            ssh=$(echo "$account" | cut -d':' -f1)
+
+            # 转义单引号以防止语法错误
+            tg_token_escaped=${TG_TOKEN//\'/\'\\\'\'}
+            chat_id_escaped=${CHAT_ID//\'/\'\\\'\'}
 
             echo "echo \"Executing for $ssh\"" >> sshpass.sh
-            echo "sshpass -p '$password' ssh -o StrictHostKeyChecking=no '$username@$ssh' 'bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)'" >> sshpass.sh
+            # 在远程命令中设置环境变量
+            echo "sshpass -p '$password' ssh -o StrictHostKeyChecking=no '$username@$ssh' 'export TG_TOKEN='\''$tg_token_escaped'\'' CHAT_ID='\''$chat_id_escaped'\'' && bash <(curl -s https://raw.githubusercontent.com/leung7963/SERV00/main/restart.sh)'" >> sshpass.sh
           done < servers.txt
           chmod +x sshpass.sh
+        env:
+          TG_TOKEN: ${{ env.TG_TOKEN }}
+          CHAT_ID: ${{ env.CHAT_ID }}
 
       - name: Execute SSH Commands
         run: ./sshpass.sh
