@@ -68,7 +68,7 @@ generate_config() {
       },
       {
         "tag": "local",
-        "address": "local"
+        "address": "8.8.8.8"
       }
     ]
   },
