@@ -32,7 +32,7 @@ fi
 
 if [ -n "$TG_TOKEN" ] && [ -n "$CHAT_ID" ]; then
         echo "-----------发送TG通知-----------------"
-	    local message="执行成功"
+	    local message="重启成功"
 	    response=$(curl -s -X POST "https://api.telegram.org/bot$TG_TOKEN/sendMessage" -d "chat_id=$CHAT_ID" -d "text=$message")
 
 	    # 检查响应
