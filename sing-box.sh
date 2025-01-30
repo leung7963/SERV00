@@ -9,7 +9,7 @@ purple="\e[1;35m"
 skyblue="\e[1;36m"
 
 # 定义常量（通过环境变量设置）
-export UUID=${UUID:-$(cat /proc/sys/kernel/random/uuid)}
+export UUID=${UUID:-'UUID'}
 export ARGO_DOMAIN=${ARGO_DOMAIN:-'your-fixed-domain.argo'}
 export ARGO_AUTH=${ARGO_AUTH:-'your-argo-token-or-json'}
 export NON_INTERACTIVE=${NON_INTERACTIVE:-1} # 1=非交互模式
