@@ -36,3 +36,15 @@ jobs:
 
       - name: Execute SSH Commands
         run: ./sshpass.sh
+
+      - name: Send Telegram Notification
+        if: always()  # 无论任务成功失败都发送通知
+        run: |
+          curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+              "chat_id": "${{ secrets.CHAT_ID }}",
+              "text": "GitHub Actions 任务执行完成！\n\n仓库: ${{ github.repository }}\n工作流: ${{ github.workflow }}\n状态: ${{ job.status }}",
+              "disable_notification": false
+            }' \
+            https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage
