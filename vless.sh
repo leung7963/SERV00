@@ -63,7 +63,7 @@ generate_config() {
   "dns": {
     "servers": [
       {
-        "address": "https://dns.cloudflare.com/dns-query",
+        "address": "https://dns.google/dns-query",
         "address_resolver": "local"
       },
       {
