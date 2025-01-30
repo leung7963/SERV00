@@ -38,7 +38,6 @@ jobs:
         run: ./sshpass.sh
 
       - name: Send Telegram Notification
-        if: always()  # 无论任务成功失败都发送通知
         run: |
           curl -s -X POST \
             -H "Content-Type: application/json" \
