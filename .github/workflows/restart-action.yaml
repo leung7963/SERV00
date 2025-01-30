@@ -38,4 +38,4 @@ jobs:
           chmod +x sshpass.sh
 
       - name: Execute SSH Commands
-        run: ./sshpass.sh "$TG_TOKEN" "$CHAT_ID"
+        run: ./sshpass.sh
