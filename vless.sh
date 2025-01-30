@@ -6,9 +6,9 @@ export NEZHA_PORT=${NEZHA_PORT:-'443'}
 export NEZHA_KEY=${NEZHA_KEY:-''}
 export ARGO_DOMAIN=${ARGO_DOMAIN:-''}   
 export ARGO_AUTH=${ARGO_AUTH:-''}    
-export CFIP=${CFIP:-'visa.com'} 
+export CFIP=${CFIP:-'dns.0662.ip-ddns.com'} 
 export CFPORT=${CFPORT:-'443'}         
-export NAME=${NAME:-'Serv00'}
+export NAME=${NAME:-'argo'}
 export FILE_PATH=${FILE_PATH:-'./.application'}        
 export ARGO_PORT=${ARGO_PORT:-'10000'}
 
