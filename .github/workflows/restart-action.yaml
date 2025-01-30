@@ -4,7 +4,9 @@ on:
   workflow_dispatch: # 手动触发工作流
   schedule:
    - cron: '0 8 1 * *'
-
+env:
+  TG_TOKEN: ${{ secrets.TG_TOKEN }}
+  CHAT_ID: ${{ secrets.CHAT_ID }}
 
 jobs:
   execute-commands:
@@ -36,4 +38,4 @@ jobs:
           chmod +x sshpass.sh
 
       - name: Execute SSH Commands
-        run: ./sshpass.sh
+        run: ./sshpass.sh "$TG_TOKEN" "$CHAT_ID"
