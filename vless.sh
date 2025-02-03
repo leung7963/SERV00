@@ -124,7 +124,7 @@ generate_config() {
      "outbound": "warp"
     }
     ],
-    "final": "direct"
+    "final": "warp"
     }
 }
 EOF
