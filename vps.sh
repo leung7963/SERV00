@@ -612,3 +612,4 @@ if [ ${check_singbox} -eq 0 ]; then
 
 
 }
+done
