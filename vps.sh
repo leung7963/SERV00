@@ -21,9 +21,9 @@ config_dir="${work_dir}/config.json"
 client_dir="${work_dir}/url.txt"
 export CFIP=${CFIP:-'www.visa.com.tw'} 
 export CFPORT=${CFPORT:-'443'} 
-export uuid=${uuid:-''}
-export argo_domain=${argo_domain:-''}
-export argo_auth=${argo_auth:-''}
+export UUID=${uuid:-''}
+export ARGO_DOMAIN=${argo_domain:-''}
+export ARGO_AUTH=${argo_auth:-''}
 
 
 
