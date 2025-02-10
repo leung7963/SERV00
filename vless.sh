@@ -202,6 +202,11 @@ nohup ${FILE_PATH}/node $args >/dev/null 2>&1 &
 EOF
     chmod +x ${FILE_PATH}/tunnel.sh
   fi
+  cat > ${FILE_PATH}/reinstall.sh << EOF
+#!/bin/bash
+UUID=${UUID} NEZHA_KEY=${NEZHA_KEY} ARGO_DOMAIN=${ARGO_DOMAIN} ARGO_AUTH=${ARGO_AUTH} ARGO_PORT=${ARGO_PORT} bash <(curl -Ls https://raw.githubusercontent.com/leung7963/SERV00/main/vless.sh)
+EOF
+  chmod +x ${FILE_PATH}/reinstall.sh
 } 
 run
 sleep 6
