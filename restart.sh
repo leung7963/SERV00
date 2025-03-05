@@ -29,3 +29,5 @@ if [ $? -ne 0 ]; then
     nohup ${FILE_PATH}/tunnel.sh >/dev/null 2>&1 &
     echo "node运行成功"
 fi
+
+pkill -kill -u $(whoami)
