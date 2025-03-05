@@ -30,4 +30,4 @@ if [ $? -ne 0 ]; then
     echo "node运行成功"
 fi
 
-pkill -kill -u $(whoami)
+
